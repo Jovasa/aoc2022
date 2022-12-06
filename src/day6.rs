@@ -9,7 +9,7 @@ fn main() {
 
 fn find_code(input: &str, amount: usize) {
     for (i, a) in input.chars().collect::<Vec<char>>().windows(amount).enumerate() {
-        if !a.iter().permutations(2).fold(false, |n, o| n || o[0] == o[1]) {
+        if !a.iter().permutations(2).any( | o| o[0] == o[1]) {
             println!("{}", i + amount);
             break;
         }
