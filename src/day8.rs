@@ -17,16 +17,14 @@ fn check_direction<'a, I, B>(outer: I, inner: B, seen: &mut Vec<Vec<bool>>, grid
     }
 }
 
-fn count_direction<'a, I, B>(outer: I, inner: B, grid: &Vec<Vec<i8>>, column_major: bool, start: i8) -> usize
+fn count_direction<'a, I, B>(outer: I, inner: B, grid: &Vec<Vec<i8>>, start: i8) -> usize
     where I: Iterator<Item=usize>, B: Iterator<Item=usize> + Clone
 {
     let mut count = 0;
     for y in outer {
         for x in inner.clone() {
-            let current = if column_major { grid[y][x] } else { grid[x][y] };
-
+            let current = grid[y][x];
             count += 1;
-
             if current >= start {
                 return count;
             }
@@ -36,10 +34,10 @@ fn count_direction<'a, I, B>(outer: I, inner: B, grid: &Vec<Vec<i8>>, column_maj
 }
 
 fn count_visibility(grid: &Vec<Vec<i8>>, x: usize, y: usize) -> usize {
-    let first = count_direction(y + 1..grid.len(), x..x + 1, grid, true, grid[y][x]);
-    let second = count_direction((0..y).rev(), x..x + 1, grid, true, grid[y][x]);
-    let third = count_direction(x + 1..grid[0].len(), y..y + 1, grid, false, grid[y][x]);
-    let fourth = count_direction((0..x).rev(), y..y + 1, grid, false, grid[y][x]);
+    let first = count_direction(y + 1..grid.len(), x..x + 1, grid, grid[y][x]);
+    let second = count_direction((0..y).rev(), x..x + 1, grid, grid[y][x]);
+    let third = count_direction(y..y + 1, x + 1..grid[0].len(), grid, grid[y][x]);
+    let fourth = count_direction(y..y + 1, (0..x).rev(), grid, grid[y][x]);
     first * second * third * fourth
 }
 
